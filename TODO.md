@@ -1,0 +1,2 @@
+# To Do List
+* Background Component - This doesn't work the way I'd like and maybe it's pointless to design it this way with some easy shorthand CSS stuff. Background looks placeholder fine for now though.
