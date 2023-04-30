@@ -1,39 +1,40 @@
 .custom-list {
-    padding: 1rem;
-  
-    &.compact-view {
-      table {
-        td, th {
-          padding: 0.5rem;
-        }
-      }
-    }
-  
-    &.wrap-text {
-      table {
-        td, th {
-          white-space: normal;
-        }
-      }
-    }
-  }
-  
-  mat-form-field {
-    width: 100%;
-  }
-  
-  table {
-    width: 100%;
-  }
-  
-  .mat-header-cell,
-  .mat-cell {
-    padding: 1rem;
-    word-break: break-word;
-  }
+  padding: 1rem;
 
-  .hidden {
-    display: none;
+  &.wrap-text {
+    table {
+      td, th {
+        white-space: normal;
+      }
+    }
   }
-  
-  
+}
+
+.compact-view {
+    tr {
+      height: 0px;
+      padding: 0.5rem;
+    }
+    td, th, input {
+      font-size: 0.75rem;
+    }
+}
+
+
+mat-form-field {
+  width: 100%;
+}
+
+table {
+  width: 100%;
+}
+
+.mat-header-cell,
+.mat-cell {
+  padding: 1rem;
+  word-break: break-word;
+}
+
+.hidden {
+  display: none;
+}

@@ -55,6 +55,7 @@ export class ListComponent implements AfterViewInit {
   dataSource = new MatTableDataSource(ELEMENT_DATA);
   selection = new SelectionModel<ListItem>(true, []);
   hiddenRows: ListItem[] = [];
+  compactView = false;
 
   @ViewChild(MatSort, { static: true }) sort: MatSort | null = null;
   @ViewChild(MatTable) table: MatTable<any> | null = null;
@@ -99,5 +100,9 @@ export class ListComponent implements AfterViewInit {
 
   unhideRows() {
     this.hiddenRows = [];
+  }
+
+  toggleCompactView() {
+    this.compactView = !this.compactView;
   }
 }
