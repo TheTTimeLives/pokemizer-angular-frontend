@@ -28,12 +28,18 @@
   
         <!-- Add your existing column definitions here -->
         <ng-container *ngFor="let column of columns" [matColumnDef]="column.columnDef">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>{{column.header}}</th>
-          <td mat-cell *matCellDef="let row">{{column.cell(row)}}</td>
-        </ng-container>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header [ngClass]="{'sticky': column.sticky}">
+              <div class="header-cell">
+                {{column.header}}
+                <button mat-icon-button (click)="toggleSticky(column)"><mat-icon>push_pin</mat-icon></button>
+                <div matColumnResizeHandle class="resize-handle"></div>
+              </div>
+            </th>
+            <td mat-cell *matCellDef="let row" [ngClass]="{'sticky': column.sticky}">{{column.cell(row)}}</td>
+          </ng-container>                 
   
         <tr mat-header-row *matHeaderRowDef="allColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: allColumns;" cdkDrag [cdkDragData]="row" [class.hidden]="isRowHidden(row)"></tr>
       </ng-container>
     </table>
-  </div>
+  </div>  

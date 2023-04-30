@@ -1,25 +1,33 @@
 .custom-list {
   padding: 1rem;
 
+  table {
+    &.compact-view {
+      td,
+      th {
+        padding: 0.5rem;
+        font-size: 0.8rem;
+      }
+    }
+  }
+
   &.wrap-text {
     table {
-      td, th {
+      td,
+      th {
         white-space: normal;
       }
     }
   }
 }
 
-.compact-view {
-    tr {
-      height: 0px;
-      padding: 0.5rem;
-    }
-    td, th, input {
-      font-size: 0.75rem;
-    }
+thead {
+  background-color: lightgray;
+  border: black 1px solid;
+  th {
+    border: black 1px solid;
+  }
 }
-
 
 mat-form-field {
   width: 100%;
@@ -27,6 +35,21 @@ mat-form-field {
 
 table {
   width: 100%;
+  table-layout: fixed;
+
+  .header-cell {
+    display: flex;
+    align-items: center;
+  }
+
+  .resize-handle {
+    width: 10px;
+    height: 100%;
+    position: absolute;
+    right: -5px;
+    top: 0;
+    cursor: col-resize;
+  }
 }
 
 .mat-header-cell,
@@ -37,4 +60,13 @@ table {
 
 .hidden {
   display: none;
+}
+
+.sticky {
+  position: sticky;
+  width: 150px;
+  background-color: lightgray;
+  border-right: 2px solid #ccc;
+  z-index: 2;
+  white-space: nowrap;
 }

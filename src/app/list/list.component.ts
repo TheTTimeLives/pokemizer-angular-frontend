@@ -9,30 +9,50 @@ export interface ListItem {
   column1: string;
   column2: string;
   column3: string;
+  column4: string;
+  column5: string;
+  column6: string;
+  column7: string;
 }
 
 // Add your existing ELEMENT_DATA here
 const ELEMENT_DATA: ListItem[] = [
   // Add your list data here
   {
-    column1: 'Adam',
+    column1: 'Adam with a really long name and it is really long',
     column2: '23',
-    column3: 'CHUNGUS'
+    column3: 'CHUNGUS',
+    column4: 'EXTRA EXTRA EXTRA EXTRA',
+    column5: 'something',
+    column6: 'who cares',
+    column7: ''
   },
   {
     column1: 'Brandon',
     column2: '22',
-    column3: 'NOT CHUNGUS'
+    column3: 'NOT CHUNGUS',
+    column4: 'EXTRA EXTRA EXTRA EXTRA',
+    column5: 'something',
+    column6: 'who cares',
+    column7: ''
   },
   {
     column1: 'Chad',
-    column2: '1',
-    column3: 'CHUNGUS'
+    column2: '143y278664873264873232746732687432647326874',
+    column3: 'CHUNGUS',
+    column4: 'EXTRA EXTRA EXTRA EXTRA',
+    column5: 'something',
+    column6: 'who cares',
+    column7: ''
   },
   {
     column1: 'David',
     column2: '18',
-    column3: 'NOT CHUNGUS'
+    column3: 'NOT CHUNGUS CHUNGUS CHUNGUS CHUNGUS CHUNGUS CHUNGUS',
+    column4: 'EXTRA EXTRA EXTRA EXTRA',
+    column5: 'something',
+    column6: 'who cares',
+    column7: ''
   }
 ];
 
@@ -40,25 +60,34 @@ const ELEMENT_DATA: ListItem[] = [
   selector: 'app-custom-list',
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.less']
+  // encapsulation: ViewEncapsulation.None
 })
 export class ListComponent implements AfterViewInit {
-  displayedColumns: string[] = ['column1', 'column2', 'column3'];
-
   // Define the columns
   columns = [
-    { columnDef: 'column1', header: 'Column 1', cell: (row: ListItem) => `${row.column1}` },
-    { columnDef: 'column2', header: 'Column 2', cell: (row: ListItem) => `${row.column2}` },
-    { columnDef: 'column3', header: 'Column 3', cell: (row: ListItem) => `${row.column3}` },
+    { columnDef: 'column1', header: 'Column 1', cell: (row: ListItem) => `${row.column1}`, sticky: false },
+    { columnDef: 'column2', header: 'Column 2', cell: (row: ListItem) => `${row.column2}`, sticky: false },
+    { columnDef: 'column3', header: 'Column 3', cell: (row: ListItem) => `${row.column3}`, sticky: false },
+    { columnDef: 'column4', header: 'Column 4', cell: (row: ListItem) => `${row.column3}`, sticky: false },
+    { columnDef: 'column5', header: 'Column 5', cell: (row: ListItem) => `${row.column3}`, sticky: false },
+    { columnDef: 'column6', header: 'Column 6', cell: (row: ListItem) => `${row.column3}`, sticky: false },
+    { columnDef: 'column7', header: 'Column 7', cell: (row: ListItem) => `${row.column3}`, sticky: false },
+
   ];
 
-  allColumns: string[] = ['select', ...this.displayedColumns];
+  allColumns: string[] = [];
   dataSource = new MatTableDataSource(ELEMENT_DATA);
   selection = new SelectionModel<ListItem>(true, []);
   hiddenRows: ListItem[] = [];
   compactView = false;
+  sticky = false;
 
   @ViewChild(MatSort, { static: true }) sort: MatSort | null = null;
   @ViewChild(MatTable) table: MatTable<any> | null = null;
+
+  ngOnInit() {
+    this.allColumns = ['select', ...this.columns.map(column => column.columnDef)];
+  }
 
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
@@ -67,6 +96,10 @@ export class ListComponent implements AfterViewInit {
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  toggleSticky(column : any) {
+    column.sticky = !column.sticky;
   }
 
   onRowDrop(event: CdkDragDrop<ListItem[]>) {

@@ -20,8 +20,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-
-
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [
@@ -43,6 +42,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     DragDropModule,
     MatCheckboxModule,
     MatInputModule,
+    MatIconModule,
     MatFormFieldModule,
     MatTableModule,
     MatSortModule,
