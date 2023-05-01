@@ -4,13 +4,20 @@
       <input matInput (input)="applyFilter($event)" placeholder="Filter by any column">
     </mat-form-field>
   
-    <button mat-raised-button color="warn" (click)="hideSelectedRows()">Hide Selected Rows</button>
-    <button mat-raised-button color="primary" (click)="unhideRows()">Unhide Rows</button>
-  
-    <button mat-raised-button (click)="toggleCompactView()">Toggle Compact View</button>
-  
-    <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8" cdkDropList (cdkDropListDropped)="onRowDrop($event)" mat-table-resize [ngClass]="{'compact-view': compactView}">
-      <ng-container *ngIf="dataSource">
+    <div>
+      <button mat-raised-button color="warn" (click)="hideSelectedRows()">Hide Selected Rows</button>
+      <button mat-raised-button color="primary" (click)="unhideRows()">Unhide Rows</button>
+      <div class="compact-buttons">
+        <button mat-raised-button (click)="toggleView('compact')">Compact View</button>
+        <button mat-raised-button (click)="toggleView('extra-compact')">Extra Compact View</button>
+        <button mat-raised-button (click)="toggleView('super-compact')">Super Compact View</button>
+        <button mat-raised-button (click)="toggleView('default')">Default View</button>
+      </div>
+    </div>
+
+<table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8"
+  cdkDropList (cdkDropListDropped)="onRowDrop($event)" mat-table-resize
+  [ngClass]="{'compact-view': compactView, 'extra-compact-view': extraCompactView, 'super-compact-view': superCompactView}">      <ng-container *ngIf="dataSource">
         <ng-container matColumnDef="select">
           <th mat-header-cell *matHeaderCellDef>
             <mat-checkbox (change)="$event ? masterToggle() : null"

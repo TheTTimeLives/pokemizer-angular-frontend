@@ -21,6 +21,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
+import { ResizableModule } from 'angular-resizable-element';
 
 @NgModule({
   declarations: [
@@ -49,6 +50,7 @@ import { MatIconModule } from '@angular/material/icon';
     AppRoutingModule,
     HttpClientModule,
     BrowserAnimationsModule,
+    ResizableModule
   ],
   providers: [],
   bootstrap: [AppComponent]

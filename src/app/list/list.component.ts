@@ -4,6 +4,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTable } from '@angular/material/table';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { SelectionModel } from '@angular/cdk/collections';
+// import { ResizeEvent } from 'angular-resizable-element';
 
 export interface ListItem {
   column1: string;
@@ -80,6 +81,8 @@ export class ListComponent implements AfterViewInit {
   selection = new SelectionModel<ListItem>(true, []);
   hiddenRows: ListItem[] = [];
   compactView = false;
+  extraCompactView = false;
+  superCompactView = false;
   sticky = false;
 
   @ViewChild(MatSort, { static: true }) sort: MatSort | null = null;
@@ -90,6 +93,7 @@ export class ListComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
+    console.log("Sort?")
     this.dataSource.sort = this.sort;
   }
 
@@ -103,18 +107,29 @@ export class ListComponent implements AfterViewInit {
   }
 
   onRowDrop(event: CdkDragDrop<ListItem[]>) {
-    const prevIndex = this.dataSource.data.findIndex(d => d === event.item.data);
-    moveItemInArray(this.dataSource.data, prevIndex, event.currentIndex);
-    this.dataSource.data = [...this.dataSource.data];
-    this.table?.renderRows();
-  
     // Reapply the current sort
-    if (this.sort?.direction) {
-      this.dataSource.sort = this.sort;
+    if (this.sort?.direction == '') {
+      const prevIndex = this.dataSource.data.findIndex(d => d === event.item.data);
+      moveItemInArray(this.dataSource.data, prevIndex, event.currentIndex);
+      this.dataSource.data = [...this.dataSource.data];
+      this.table?.renderRows();
     }
   }
+
+  // onResizeEnd(event: ResizeEvent, column: any): void {
+  //   if (event.edges.right) {
+  //     const newWidth = event.rectangle.width;
+  //     column.width = newWidth + 'px';
+  //   }
+  // }
   
-  
+  // validateResize(event: ResizeEvent): boolean {
+  //   const MIN_COLUMN_WIDTH = 50;
+  //   if (event?.rectangle?.width? < MIN_COLUMN_WIDTH) {
+  //     return false;
+  //   }
+  //   return true;
+  // }
 
   isAllSelected() {
     const numSelected = this.selection.selected.length;
@@ -143,7 +158,29 @@ export class ListComponent implements AfterViewInit {
     this.hiddenRows = [];
   }
 
-  toggleCompactView() {
-    this.compactView = !this.compactView;
+  toggleView(view: string) {
+    switch (view) {
+      case "compact":
+        this.compactView = true;
+        this.extraCompactView = false;
+        this.superCompactView = false;
+        break;
+      case "extra-compact":
+        this.compactView = false;
+        this.extraCompactView = true;
+        this.superCompactView = false;
+        break;
+      case "super-compact":
+        this.compactView = false;
+        this.extraCompactView = false;
+        this.superCompactView = true;
+        break;
+      default:
+        this.compactView = false;
+        this.extraCompactView = false;
+        this.superCompactView = false;
+        break;
+    }
   }
+  
 }

@@ -1,12 +1,34 @@
 .custom-list {
   padding: 1rem;
 
+  .compact-buttons {
+    display: inline;
+    position: absolute;
+    right: 15px;
+  }
+  
   table {
     &.compact-view {
       td,
       th {
         padding: 0.5rem;
         font-size: 0.8rem;
+      }
+    }
+
+    &.extra-compact-view {
+      td,
+      th {
+        padding: 0.25rem;
+        font-size: 0.6rem;
+      }
+    }
+    
+    &.super-compact-view {
+      td,
+      th {
+        padding: 0.15rem;
+        font-size: 0.4rem;
       }
     }
   }
