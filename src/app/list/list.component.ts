@@ -4,7 +4,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTable } from '@angular/material/table';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { SelectionModel } from '@angular/cdk/collections';
-// import { ResizeEvent } from 'angular-resizable-element';
+import { ResizeEvent } from 'angular-resizable-element';
 
 export interface ListItem {
   column1: string;
@@ -116,20 +116,21 @@ export class ListComponent implements AfterViewInit {
     }
   }
 
-  // onResizeEnd(event: ResizeEvent, column: any): void {
-  //   if (event.edges.right) {
-  //     const newWidth = event.rectangle.width;
-  //     column.width = newWidth + 'px';
-  //   }
-  // }
+  onResizeEnd(event: ResizeEvent, column: any): void {
+    if (event.edges.right) {
+      const newWidth = event.rectangle.width;
+      column.width = newWidth + 'px';
+    }
+  }
   
-  // validateResize(event: ResizeEvent): boolean {
-  //   const MIN_COLUMN_WIDTH = 50;
-  //   if (event?.rectangle?.width? < MIN_COLUMN_WIDTH) {
-  //     return false;
-  //   }
-  //   return true;
-  // }
+  validateResize(event: ResizeEvent): boolean {
+    const MIN_COLUMN_WIDTH = 50;
+    if (event.rectangle.width && event.rectangle.width < MIN_COLUMN_WIDTH) {
+      return false;
+    }
+    return true;
+  }
+  
 
   isAllSelected() {
     const numSelected = this.selection.selected.length;
