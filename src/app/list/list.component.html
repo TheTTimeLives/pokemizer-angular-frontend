@@ -42,7 +42,9 @@
                 </div>
                 <mat-icon (click)="toggleSticky(column)">push_pin</mat-icon>
                 <span class="resize-handle" mwlResizeHandle [resizeEdges]="{ right: true }"></span>
-              </div>
+                <mat-icon class="shift-arrow" mat-icon-button (click)="moveColumn(column, 'left')">keyboard_arrow_left</mat-icon>
+                <mat-icon class="shift-arrow" mat-icon-button (click)="moveColumn(column, 'right')">keyboard_arrow_right</mat-icon>
+              </div>              
             </th>
             <td mat-cell *matCellDef="let row" [ngClass]="{'sticky': column.sticky}">{{column.cell(row)}}</td>
           </ng-container>                 

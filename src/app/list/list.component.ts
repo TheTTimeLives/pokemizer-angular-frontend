@@ -106,6 +106,19 @@ export class ListComponent implements AfterViewInit {
     column.sticky = !column.sticky;
   }
 
+  moveColumn(column: any, direction: 'left' | 'right') {
+    const columnIndex = this.columns.findIndex(col => col.columnDef === column.columnDef);
+    const targetIndex = direction === 'left' ? columnIndex - 1 : columnIndex + 1;
+  
+    // Check if target index is within the valid range
+    if (targetIndex >= 0 && targetIndex < this.columns.length) {
+      // Swap columns
+      [this.columns[columnIndex], this.columns[targetIndex]] = [this.columns[targetIndex], this.columns[columnIndex]];
+      // Update the allColumns array
+      this.allColumns = ['select', ...this.columns.map(col => col.columnDef)];
+    }
+  }
+  
   onRowDrop(event: CdkDragDrop<ListItem[]>) {
     // Reapply the current sort
     if (this.sort?.direction == '') {
