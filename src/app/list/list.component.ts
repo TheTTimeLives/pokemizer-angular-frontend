@@ -105,8 +105,16 @@ export class ListComponent implements AfterViewInit {
   onRowDrop(event: CdkDragDrop<ListItem[]>) {
     const prevIndex = this.dataSource.data.findIndex(d => d === event.item.data);
     moveItemInArray(this.dataSource.data, prevIndex, event.currentIndex);
-    this.dataSource
+    this.dataSource.data = [...this.dataSource.data];
+    this.table?.renderRows();
+  
+    // Reapply the current sort
+    if (this.sort?.direction) {
+      this.dataSource.sort = this.sort;
+    }
   }
+  
+  
 
   isAllSelected() {
     const numSelected = this.selection.selected.length;
