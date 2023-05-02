@@ -9,9 +9,7 @@ export interface TableItem {
   [key: string]: string | number;
 }
 
-// Add your existing ELEMENT_DATA here
 const ELEMENT_DATA: TableItem[] = [
-  // Add your list data here
   {
     column1: 'Adam with a really long name and it is really long',
     column2: '23',
@@ -54,7 +52,6 @@ const ELEMENT_DATA: TableItem[] = [
   selector: 'app-custom-list',
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.less']
-  // encapsulation: ViewEncapsulation.None
 })
 export class ListComponent implements AfterViewInit {
   columns = [
@@ -73,7 +70,6 @@ export class ListComponent implements AfterViewInit {
   allColumns: string[] = [];
   sortOrder: 'asc' | 'desc' | '' = '';
   activeSort: string = '';
-  // the dataSource is what is loaded into the table
   dataSource = new MatTableDataSource(ELEMENT_DATA);
   selection = new SelectionModel<TableItem>(true, []);
   hiddenRows: TableItem[] = [];
@@ -88,7 +84,6 @@ export class ListComponent implements AfterViewInit {
   ngOnInit() {
     this.loadConfiguration();
     this.mapColumns()
-    // Render table rows from columns list
     if (this.columns) {
       this.allColumns = ['select', ...this.columns.map(column => column.columnDef)];
     }
@@ -201,7 +196,6 @@ export class ListComponent implements AfterViewInit {
 
   loadConfiguration() {
     // load column order, views and sort from session
-    console.log("FROM CACHE!")
     const configStr = sessionStorage.getItem('listComponentSettings');
     if (configStr) {
       const config = JSON.parse(configStr);
@@ -213,7 +207,6 @@ export class ListComponent implements AfterViewInit {
       this.compactView = config.compactView;
       this.extraCompactView = config.extraCompactView;
       this.superCompactView = config.superCompactView;
-      console.log("Columns?", this.columns)
       this.allColumns = ['select', ...this.columns.map(column => column.columnDef)];
     }
   }  
@@ -236,9 +229,7 @@ export class ListComponent implements AfterViewInit {
       sortOrder: this.sort?.direction,
       activeSort: this.sort?.active
     };
-  
-    console.log("Settings?", this.columns, this.mappedColumns);
-  
+    
     sessionStorage.setItem('listComponentSettings', JSON.stringify(settings));
   }
 
