@@ -34,14 +34,13 @@
         </ng-container>
   
         <!-- Add your existing column definitions here -->
-        <ng-container *ngFor="let column of columns" [matColumnDef]="column.columnDef">
+        <ng-container *ngFor="let column of mappedColumns" [matColumnDef]="column.columnDef">
             <th mat-header-cell *matHeaderCellDef [ngClass]="{'sticky': column.sticky}">
-              <div class="header-cell" mwlResizable [validateResize]="validateResize" (resizeEnd)="onResizeEnd($event, column)">
+              <div class="header-cell">
                 <div mat-sort-header>
                   {{column.header}}
                 </div>
                 <mat-icon (click)="toggleSticky(column)">push_pin</mat-icon>
-                <span class="resize-handle" mwlResizeHandle [resizeEdges]="{ right: true }"></span>
                 <mat-icon class="shift-arrow" mat-icon-button (click)="moveColumn(column, 'left')">keyboard_arrow_left</mat-icon>
                 <mat-icon class="shift-arrow" mat-icon-button (click)="moveColumn(column, 'right')">keyboard_arrow_right</mat-icon>
               </div>              
@@ -53,4 +52,5 @@
         <tr mat-row *matRowDef="let row; columns: allColumns;" cdkDrag [cdkDragData]="row" [class.hidden]="isRowHidden(row)"></tr>
       </ng-container>
     </table>
+    <button mat-raised-button (click)="clearCachedSettings()">Clear Cached Settings</button>
   </div>  

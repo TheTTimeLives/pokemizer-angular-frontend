@@ -4,20 +4,13 @@ import { MatSort } from '@angular/material/sort';
 import { MatTable } from '@angular/material/table';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { SelectionModel } from '@angular/cdk/collections';
-import { ResizeEvent } from 'angular-resizable-element';
 
-export interface ListItem {
-  column1: string;
-  column2: string;
-  column3: string;
-  column4: string;
-  column5: string;
-  column6: string;
-  column7: string;
+export interface TableItem {
+  [key: string]: string | number;
 }
 
 // Add your existing ELEMENT_DATA here
-const ELEMENT_DATA: ListItem[] = [
+const ELEMENT_DATA: TableItem[] = [
   // Add your list data here
   {
     column1: 'Adam with a really long name and it is really long',
@@ -44,7 +37,7 @@ const ELEMENT_DATA: ListItem[] = [
     column4: 'EXTRA EXTRA EXTRA EXTRA',
     column5: 'something',
     column6: 'who cares',
-    column7: ''
+    column7: '?1&*('
   },
   {
     column1: 'David',
@@ -53,7 +46,7 @@ const ELEMENT_DATA: ListItem[] = [
     column4: 'EXTRA EXTRA EXTRA EXTRA',
     column5: 'something',
     column6: 'who cares',
-    column7: ''
+    column7: 'Not empty!'
   }
 ];
 
@@ -64,22 +57,26 @@ const ELEMENT_DATA: ListItem[] = [
   // encapsulation: ViewEncapsulation.None
 })
 export class ListComponent implements AfterViewInit {
-  // Define the columns
   columns = [
-    { columnDef: 'column1', header: 'Column 1', cell: (row: ListItem) => `${row.column1}`, sticky: false },
-    { columnDef: 'column2', header: 'Column 2', cell: (row: ListItem) => `${row.column2}`, sticky: false },
-    { columnDef: 'column3', header: 'Column 3', cell: (row: ListItem) => `${row.column3}`, sticky: false },
-    { columnDef: 'column4', header: 'Column 4', cell: (row: ListItem) => `${row.column3}`, sticky: false },
-    { columnDef: 'column5', header: 'Column 5', cell: (row: ListItem) => `${row.column3}`, sticky: false },
-    { columnDef: 'column6', header: 'Column 6', cell: (row: ListItem) => `${row.column3}`, sticky: false },
-    { columnDef: 'column7', header: 'Column 7', cell: (row: ListItem) => `${row.column3}`, sticky: false },
-
+    { columnDef: 'column1', header: 'Column 1', sticky: false },
+    { columnDef: 'column2', header: 'Column 2', sticky: false },
+    { columnDef: 'column3', header: 'Column 3', sticky: false },
+    { columnDef: 'column4', header: 'Column 4', sticky: false },
+    { columnDef: 'column5', header: 'Column 5', sticky: false },
+    { columnDef: 'column6', header: 'Column 6', sticky: false },
+    { columnDef: 'column7', header: 'Column 7', sticky: false },
   ];
+  mappedColumns : any;
+  
+  // This is a mat table with all the bells and whistles
 
   allColumns: string[] = [];
+  sortOrder: 'asc' | 'desc' | '' = '';
+  activeSort: string = '';
+  // the dataSource is what is loaded into the table
   dataSource = new MatTableDataSource(ELEMENT_DATA);
-  selection = new SelectionModel<ListItem>(true, []);
-  hiddenRows: ListItem[] = [];
+  selection = new SelectionModel<TableItem>(true, []);
+  hiddenRows: TableItem[] = [];
   compactView = false;
   extraCompactView = false;
   superCompactView = false;
@@ -89,13 +86,28 @@ export class ListComponent implements AfterViewInit {
   @ViewChild(MatTable) table: MatTable<any> | null = null;
 
   ngOnInit() {
-    this.allColumns = ['select', ...this.columns.map(column => column.columnDef)];
+    this.loadConfiguration();
+    this.mapColumns()
+    // Render table rows from columns list
+    if (this.columns) {
+      this.allColumns = ['select', ...this.columns.map(column => column.columnDef)];
+    }
   }
 
-  ngAfterViewInit() {
-    console.log("Sort?")
-    this.dataSource.sort = this.sort;
+  mapColumns() {
+    // add methods and metadata to columns for mat table
+    this.mappedColumns = this.columns.map(column => ({
+      ...column,
+      cell: (row: TableItem) => `${row[column.columnDef]}`
+    }));
   }
+  
+  ngAfterViewInit() {
+    this.dataSource.sort = this.sort;
+    // Subscribe to sort events to save the configuration when the sort changes
+    this.sort?.sortChange.subscribe(() => this.saveConfiguration());
+  }
+
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
@@ -104,6 +116,7 @@ export class ListComponent implements AfterViewInit {
 
   toggleSticky(column : any) {
     column.sticky = !column.sticky;
+    this.saveConfiguration();
   }
 
   moveColumn(column: any, direction: 'left' | 'right') {
@@ -117,9 +130,10 @@ export class ListComponent implements AfterViewInit {
       // Update the allColumns array
       this.allColumns = ['select', ...this.columns.map(col => col.columnDef)];
     }
+    this.saveConfiguration();
   }
   
-  onRowDrop(event: CdkDragDrop<ListItem[]>) {
+  onRowDrop(event: CdkDragDrop<TableItem[]>) {
     // Reapply the current sort
     if (this.sort?.direction == '') {
       const prevIndex = this.dataSource.data.findIndex(d => d === event.item.data);
@@ -128,23 +142,7 @@ export class ListComponent implements AfterViewInit {
       this.table?.renderRows();
     }
   }
-
-  onResizeEnd(event: ResizeEvent, column: any): void {
-    if (event.edges.right) {
-      const newWidth = event.rectangle.width;
-      column.width = newWidth + 'px';
-    }
-  }
   
-  validateResize(event: ResizeEvent): boolean {
-    const MIN_COLUMN_WIDTH = 50;
-    if (event.rectangle.width && event.rectangle.width < MIN_COLUMN_WIDTH) {
-      return false;
-    }
-    return true;
-  }
-  
-
   isAllSelected() {
     const numSelected = this.selection.selected.length;
     const numRows = this.dataSource.data.length;
@@ -164,7 +162,7 @@ export class ListComponent implements AfterViewInit {
     this.selection.clear();
   }
 
-  isRowHidden(row: ListItem) {
+  isRowHidden(row: TableItem) {
     return this.hiddenRows.includes(row);
   }
 
@@ -178,23 +176,98 @@ export class ListComponent implements AfterViewInit {
         this.compactView = true;
         this.extraCompactView = false;
         this.superCompactView = false;
+        this.saveConfiguration();
         break;
       case "extra-compact":
         this.compactView = false;
         this.extraCompactView = true;
         this.superCompactView = false;
+        this.saveConfiguration();
         break;
       case "super-compact":
         this.compactView = false;
         this.extraCompactView = false;
         this.superCompactView = true;
+        this.saveConfiguration();
         break;
       default:
         this.compactView = false;
         this.extraCompactView = false;
         this.superCompactView = false;
+        this.saveConfiguration();
         break;
     }
+  }
+
+  loadConfiguration() {
+    // load column order, views and sort from session
+    console.log("FROM CACHE!")
+    const configStr = sessionStorage.getItem('listComponentSettings');
+    if (configStr) {
+      const config = JSON.parse(configStr);
+      this.columns = config.columns;
+      if (this.sort) {
+        this.sort.direction = config.sortOrder;
+        this.sort.active = config.activeSort;
+      }
+      this.compactView = config.compactView;
+      this.extraCompactView = config.extraCompactView;
+      this.superCompactView = config.superCompactView;
+      console.log("Columns?", this.columns)
+      this.allColumns = ['select', ...this.columns.map(column => column.columnDef)];
+    }
+  }  
+
+  saveConfiguration() {
+    // Update the 'sticky' property in 'columns' from 'mappedColumns' based on the 'columnDef'
+    this.columns.forEach((column) => {
+      const mappedColumn = this.mappedColumns.find((mapped: { columnDef: string; header: string; sticky: boolean }) => mapped.columnDef === column.columnDef);
+      if (mappedColumn) {
+        column.sticky = mappedColumn.sticky;
+      }
+    });
+  
+    // save to cache
+    const settings = {
+      columns: this.columns,
+      compactView: this.compactView,
+      extraCompactView: this.extraCompactView,
+      superCompactView: this.superCompactView,
+      sortOrder: this.sort?.direction,
+      activeSort: this.sort?.active
+    };
+  
+    console.log("Settings?", this.columns, this.mappedColumns);
+  
+    sessionStorage.setItem('listComponentSettings', JSON.stringify(settings));
+  }
+
+  resetConfiguration() {
+    this.columns = [
+      { columnDef: 'column1', header: 'Column 1', sticky: false },
+      { columnDef: 'column2', header: 'Column 2', sticky: false },
+      { columnDef: 'column3', header: 'Column 3', sticky: false },
+      { columnDef: 'column4', header: 'Column 4', sticky: false },
+      { columnDef: 'column5', header: 'Column 5', sticky: false },
+      { columnDef: 'column6', header: 'Column 6', sticky: false },
+      { columnDef: 'column7', header: 'Column 7', sticky: false },
+    ];
+    this.mapColumns();
+    this.allColumns = ['select', ...this.columns.map(column => column.columnDef)];
+  
+    if (this.sort) {
+      this.sort.direction = '';
+      this.sort.active = '';
+    }
+  
+    this.compactView = false;
+    this.extraCompactView = false;
+    this.superCompactView = false;
+  }
+  
+  clearCachedSettings() {
+    this.resetConfiguration();
+    sessionStorage.removeItem('listComponentSettings');
   }
   
 }
